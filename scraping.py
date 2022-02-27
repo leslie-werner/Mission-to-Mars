@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as soup
 import pandas as pd
 import datetime as dt
 from webdriver_manager.chrome import ChromeDriverManager
-
+import requests
 
 def scrape_all():
     # Initiate headless driver for deployment
@@ -21,7 +21,7 @@ def scrape_all():
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
-        "hemispheres": hemisphere_image_urls
+        "hemispheres": hemisphere
         
     }
 
@@ -102,84 +102,35 @@ def mars_facts():
 
 # D2
 
-# Import Dependencies
-from bs4 import BeautifulSoup as bs
-import requests
-
-# 1. Use browser to visit the URL 
-url = 'https://marshemispheres.com/'
-
-browser.visit(url)
-
-#Request url
-response = requests.get(url)
-
-# BeatifulSoup
-soup = bs(response.text, 'html.parser')
-
-# Returning results
-hemisphere_info = soup.find_all('div', class_ = "item")
-
-#Check to make sure correct info was called
-print(hemisphere_info)
-
-# Verifying length is correct
-len(hemisphere_info)
-
-# 2. Create a list to hold the images and titles.
-hemisphere_image_urls = []
-
-# 3. Write code to retrieve the image urls and titles for each hemisphere.
-#html tag that holds all the links to full resolution = 
-#hemisphere_images = soup.find_all('img', class_ = "thumb")
-# use for loop
-for hemisphere in hemisphere_info:
-    #create empty hemispheres = {}
-    hemispheres = {}
-    link = hemisphere.a['href'] 
-    title = hemisphere.find('h3').text
-       
-    #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
-    hemispheres = {
-        'img_url': img_url,
-        'title': title,
-    }
-    hemisphere_image_urls.append(hemispheres)
-    print(title)
-    print(link)
-    browser.back()
-
-# 4. Print the list that holds the dictionary of each image url and title.
-hemisphere_image_urls
 
 def hemisphere(browser):
     url = 'https://marshemispheres.com/'
     browser.visit(url)
+    response = requests.get(url)
+
     # Delay .....
-    browser.is_element_present_by_css('div.list_text', wait_time=1)
+    #flakbrowser.is_element_present_by_css('div.list_text', wait_time=1)
     #Soup object
-    html = browswer.html
+    html = browser.html
     soup = soup(html, 'html.parser')
-    #Add try/except
-    try: 
+    # Returning results
+    hemisphere_info = soup.find_all('div', class_ = "item") 
+    hemisphere_image_urls = []
+
+    for hemisphere in hemisphere_info:
         hemispheres = {}
         link = hemisphere.a['href'] 
         title = hemisphere.find('h3').text
+       
         #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
         hemispheres = {
         'img_url': img_url,
         'title': title,
         }
         hemisphere_image_urls.append(hemispheres)
-
-    except AttributeError:
-        return None
-
-# Returning results
+        browser.back()
+    # Returning results
     return hemisphere_image_urls
-
-#Quit
-browser.quit()
 
 
 if __name__ == "__main__":
