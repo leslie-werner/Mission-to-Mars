@@ -20,7 +20,9 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
+        "last_modified": dt.datetime.now(),
+        "hemispheres": hemisphere_image_urls
+        
     }
 
     # Stop webdriver and return data
@@ -98,7 +100,7 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
-# D1: SCRAPE HIGH-RESOLUTION MARS' HEMISPHERE IMAGES AND TITLES
+# D2
 
 # Import Dependencies
 from bs4 import BeautifulSoup as bs
@@ -149,6 +151,20 @@ for hemisphere in hemisphere_info:
 
 # 4. Print the list that holds the dictionary of each image url and title.
 hemisphere_image_urls
+
+def hemisphere(browser):
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
+    # Delay .....
+    browser.is_element_present_by_css('div.list_text', wait_time=1)
+    #Soup object
+    html = browswer.html
+    soup = soup(html, 'html.parser')
+    #Add try/except
+    
+# Returning results
+hemisphere_info = soup.find_all('div', class_ = "item")
+
 
 browser.quit()
 
