@@ -161,11 +161,24 @@ def hemisphere(browser):
     html = browswer.html
     soup = soup(html, 'html.parser')
     #Add try/except
-    
+    try: 
+        hemispheres = {}
+        link = hemisphere.a['href'] 
+        title = hemisphere.find('h3').text
+        #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
+        hemispheres = {
+        'img_url': img_url,
+        'title': title,
+        }
+        hemisphere_image_urls.append(hemispheres)
+
+    except AttributeError:
+        return None
+
 # Returning results
-hemisphere_info = soup.find_all('div', class_ = "item")
+    return hemisphere_image_urls
 
-
+#Quit
 browser.quit()
 
 
