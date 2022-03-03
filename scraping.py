@@ -21,7 +21,7 @@ def scrape_all():
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
-        "hemispheres": hemisphere
+         "hemisphere": hemisphere(browser)
         
     }
 
@@ -100,22 +100,24 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
-# D2
+# D2 -----------------------------------------------------------------------
 
 
 def hemisphere(browser):
     url = 'https://marshemispheres.com/'
     browser.visit(url)
-    response = requests.get(url)
 
+    response = requests.get(url + 'index.html')
     # Delay .....
     #flakbrowser.is_element_present_by_css('div.list_text', wait_time=1)
     #Soup object
     html = browser.html
-    soup = soup(html, 'html.parser')
-    # Returning results
-    hemisphere_info = soup.find_all('div', class_ = "item") 
+    #obj_soup = soup( html, 'html.parser')
+    obj_soup = soup(html, 'html.parser')
+    #hemisphere_info.click()
     hemisphere_image_urls = []
+
+    hemisphere_info = obj_soup.find_all('div', class_ = "item") 
 
     for hemisphere in hemisphere_info:
         hemispheres = {}
@@ -124,7 +126,7 @@ def hemisphere(browser):
        
         #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
         hemispheres = {
-        'img_url': img_url,
+        'img_url': link,
         'title': title,
         }
         hemisphere_image_urls.append(hemispheres)
@@ -132,9 +134,7 @@ def hemisphere(browser):
     # Returning results
     return hemisphere_image_urls
 
-
 if __name__ == "__main__":
 
     # If running as script, print scraped data
     print(scrape_all())
-
