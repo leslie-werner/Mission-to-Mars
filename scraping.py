@@ -21,9 +21,10 @@ def scrape_all():
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
         "last_modified": dt.datetime.now(),
+         #"hemisphere": hemisphere(browser)
          "hemisphere": hemisphere(browser)
-        
     }
+
 
     # Stop webdriver and return data
     browser.quit()
@@ -102,37 +103,57 @@ def mars_facts():
 
 # D2 -----------------------------------------------------------------------
 
-
+hemisphere_image_urls = []
 def hemisphere(browser):
+
     url = 'https://marshemispheres.com/'
     browser.visit(url)
-
-    response = requests.get(url + 'index.html')
-    # Delay .....
-    #flakbrowser.is_element_present_by_css('div.list_text', wait_time=1)
-    #Soup object
-    html = browser.html
-    #obj_soup = soup( html, 'html.parser')
-    obj_soup = soup(html, 'html.parser')
-    #hemisphere_info.click()
-    hemisphere_image_urls = []
-
-    hemisphere_info = obj_soup.find_all('div', class_ = "item") 
-
+        #Request url
+    response = requests.get(url)
+        # BeatifulSoup
+    #html = browser.html
+    soup = soup(response.text, 'html.parser')
+        # Returning results
+    hemisphere_info = soup.find_all('div', class_ = "item")
+    hemisphere_info_img = soup.find_all('img', class_="thumb")
+    hemispheres_one = []
+    for hemisphere in hemisphere_info_img:
+            #create empty hemispheres = {}
+        link = hemisphere.get('src') 
+        
+            #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
+        hemispheres_one.append(link)
+        
+            # hemisphere_image_urls.append(hemispheres)
+        print(link)
+    
+        # 2. Create a list to hold the images and titles.
+    # hemisphere_image_urls = []
+        #hemisphere_info_img = soup.find_all('img', class_="thumb")
+        # 3. Write code to retrieve the image urls and titles for each hemisphere.
+        #html tag that holds all the links to full resolution = 
+        # use for loop
+        i=0
     for hemisphere in hemisphere_info:
+        #create empty hemispheres = {}
         hemispheres = {}
-        link = hemisphere.a['href'] 
+            #hemisphere_info_img[i]
+            
+        link = hemispheres_one[i]
         title = hemisphere.find('h3').text
-       
-        #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
+            
+            #d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
         hemispheres = {
-        'img_url': link,
-        'title': title,
-        }
+            'img_url': link,
+            'title': title,
+            }
         hemisphere_image_urls.append(hemispheres)
+        i=i+1
+        #print(title)
+        #print(link)
         browser.back()
-    # Returning results
     return hemisphere_image_urls
+
 
 if __name__ == "__main__":
 
